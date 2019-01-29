@@ -1,0 +1,134 @@
+/*
+	Anthony Hanna
+	Doubly Linked List header file
+
+*/
+
+#ifndef MYDLL_H
+#define MYDLL_H
+
+#include<iostream>
+using std::cout;
+
+class MyDLL
+{
+    struct Node
+    {
+        int i;
+        Node* next, *prev;
+    };
+    
+    Node* head, *tail;
+    
+    public:
+    MyDLL();
+    ~MyDLL();
+    void append( int );
+    void remove( int );
+    bool find( int ) const;
+    void clear();
+    void print() const;
+    void reverse() const;
+};
+
+MyDLL::MyDLL()
+{
+    head = nullptr;   // the start of the list and the end of the list
+    tail = nullptr;
+}
+
+MyDLL::~MyDLL()
+{
+    clear();     // clear the list
+}
+
+void MyDLL::append( int i )   // add new value into the list
+{
+    Node* n = new Node{ i,0,0 };
+    
+    
+    if( n != nullptr )
+    {
+        if( head == 0 )
+        {
+            head = tail = n;
+        }
+        else
+        {
+            n->prev = tail;
+        tail = tail->next = n;
+        }
+    }
+}
+   
+void MyDLL::remove( int i )  // remove value from the list
+{
+    Node* p = head;
+    Node* q = nullptr;
+    while(p && p->i != i)
+    {
+        q = p;
+        p = p->next;
+    }
+    if( p )
+    {
+        if( q )
+            q->next = p->next;
+        else
+            head = p->next;
+        if( p->next )
+            p->next->prev = q;
+        else
+            tail = q;
+        delete p;
+    }
+}
+
+bool MyDLL::find( int i ) const // find a value in the list
+{
+	Node* p = tail;
+	while( p )
+	{
+		if(p->i == i)
+			return true;
+		
+		p = p->prev;
+	}
+	
+	return false;
+
+}
+
+void MyDLL::clear() // delete node from the list
+{
+    while( tail )
+    {
+        Node* p = tail;
+        tail = tail->prev;
+        delete p;
+    }
+    
+    head = 0;
+}
+
+void MyDLL::print() const // print the list
+{
+    Node* p = head;
+	while( p )
+	{
+		std::cout << p->i;
+		p = p->next;
+	}
+}
+
+void MyDLL::reverse() const // print the list in reverse
+{
+    Node* p = tail;
+    while( p )
+    {
+        std::cout << p->i;
+        p = p->prev;
+    }
+}
+
+#endif

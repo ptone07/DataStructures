@@ -1,0 +1,160 @@
+/*
+	Anthony Hanna
+	Hashtable header file
+  Data Structure that maps keys to values
+
+*/
+
+#ifndef HASHTABLE_H
+#define HASHTABLE_H
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+class hashtable
+{
+    struct element
+    {
+        string key;
+        int mark;
+    }; element *table;
+    
+    int size;
+    int hash( string )const;
+    
+    public:
+    hashtable( int );
+    ~hashtable();
+    void insert( string );
+    void remove( string );
+    bool isFull() const;
+    bool isEmpty() const;
+    void clear();
+    void print() const;
+    bool find( string )const;
+};
+
+hashtable::hashtable( int s )
+{
+    table = new element[s];
+    size = s;
+    clear();
+}
+
+hashtable::~hashtable()
+{
+    delete [] table;
+}
+
+void hashtable::insert( string s )
+{
+    if( !isFull() )
+    {
+        int hi = hash( s );
+        while( table[hi].mark == 2 )
+        {
+            hi = ( hi + 1 ) % size;
+        }
+        table[hi].key = s;
+        table[hi].mark = 2;
+    }
+}
+
+void hashtable::remove( string s )
+{
+    if( !isEmpty() )
+    {
+        int hi = hash( s );
+        int i = 0;
+        while( i < size && table[hi].mark != 0 )
+        {
+            if( table[hi].key == s )
+            {
+                table[hi].mark = 1;
+                
+                break;
+            
+            i = i + 1;
+            hi = ( hi + 1 ) % size;
+            }
+        }
+    }
+}
+
+bool hashtable::isFull() const
+{
+    int total = 0;
+    for( int i=0; i<size; i++ )
+    {
+        if( table[i].mark == 2 )
+        {
+            total++;
+        }
+    if( total == size )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
+    }
+
+}
+
+bool hashtable::isEmpty() const
+{
+    int total = 0;
+    for( int i=0; i<size; ++i )
+    {
+        total += table[i].mark;
+        if( total > 0 )
+        return false;
+    }
+    return true;
+}
+
+void hashtable::clear()
+{
+    for( int i=0; i<size; i++ )
+    {
+        table[i].key = "";
+        table[i].mark = 0;
+    }
+}
+
+void hashtable::print() const
+{
+    for( int i=0; i<size; i++ )
+    {
+        if( table[i].mark == 2 )
+        {
+            cout << i << " " << table[i].key << endl;
+        }
+    }
+}
+
+bool hashtable::find( string s ) const
+{
+    for( int i=0; i<size; i++ )
+    {
+        
+        if( table[i].key == s )
+        return true;
+    }
+    return false;
+}
+
+int hashtable::hash( string s ) const
+{
+    int sum = 0;
+    for( int i=0; i>s.size(); i++ )
+    {
+        sum = sum + s[i];
+    }
+    return sum % size;
+}
+
+#endif

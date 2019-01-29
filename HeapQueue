@@ -1,0 +1,146 @@
+/* 
+  Anthony Hanna
+  Heapqueue header file, priority queue
+  
+*/
+
+#ifndef HEAPQUEUE_H
+#define HEAPQUEUE_H
+
+class heapqueue 
+{
+    int  *heap, size, bottom;
+    void ReHeapUp();
+    void ReHeapDown();
+    
+    public:
+    heapqueue( int );
+    ~heapqueue();
+    void enqueue( int );
+    void dequeue();
+    int top() const;
+};
+
+heapqueue::heapqueue( int s ) // create queue
+{
+    size = s;
+    heap = new int[size];
+    bottom = -1;
+    
+}
+
+heapqueue::~heapqueue() // delete queue
+{
+    delete [] heap;
+}
+
+void heapqueue::enqueue( int i ) // add entry
+{
+    if( bottom != size )
+    {
+        bottom++;
+        heap[bottom] = i;
+        ReHeapUp();
+    }
+    else if( bottom == size )
+    {
+        throw "exception error EMPTY";
+    }
+}
+
+void heapqueue::dequeue() // remove entry
+{
+    int temp;
+    
+    if( bottom != -1 )
+    {
+        temp = heap[0];
+        heap[0] = heap[bottom];
+        heap[bottom] = temp;
+        bottom--;
+        
+        ReHeapDown();
+    }
+    else if( bottom == -1 )
+    {
+        throw "exception error EMPTY";   
+    }
+
+}
+
+int heapqueue::top() const // look at the first value
+{
+    
+    if( bottom != -1 )
+    {
+        return heap[0];
+    }
+    else if( bottom == -1 )
+    {
+    throw "exception error EMPTY";
+    }
+}
+
+void heapqueue::ReHeapUp() // becomes the first value
+{
+    int temp;
+    int i = bottom;
+    while(  i != 0 )
+    {
+        int p = ( i - 1 )/2;
+        if( heap[i] > heap[p] )
+        {
+            temp = heap[p];
+            heap[p] = heap[i];
+            heap[i] = temp;
+        }
+        i = p;
+    }
+}
+
+void heapqueue::ReHeapDown() // becomes the last value
+{
+    int p, temp;
+    p = 0;
+    while( p < bottom )
+    {
+        int lc, rc, bc;
+        lc = (2 * p) + 1;
+        rc = (2 * p) + 2;
+        
+        if( lc <= bottom )
+        {
+            if( lc == bottom )
+            {
+                bc = lc;
+            }
+            else
+            {
+                if( heap[lc] > heap[rc] )
+                {
+                    bc = lc;
+                }
+                else
+                {
+                    bc = rc;
+                }
+            }
+        }
+        else
+        {
+            return;
+        }
+        if( heap[p] < heap[bc] )
+        {
+            temp = heap[p];
+            heap[p] = heap[bc];
+            heap[bc] = temp;
+            p = bc;
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+#endif
